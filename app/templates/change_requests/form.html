@@ -1,0 +1,468 @@
+{% extends "base.html" %}
+
+{% block title %}
+{{ page_title }} | VoIP Operations Portal
+{% endblock %}
+
+{% block page_header %}
+{{ page_title }}
+{% endblock %}
+
+{% block content %}
+
+<div class="page-heading">
+
+    <div>
+        <h1>{{ page_title }}</h1>
+
+        <p>
+            Define, schedule and control an operational change.
+        </p>
+    </div>
+
+</div>
+
+<div class="form-card">
+
+<form
+    method="post"
+    enctype="multipart/form-data"
+>
+
+    <div class="form-grid">
+
+        <div class="form-group">
+
+            <label for="change_code">
+                Change Code
+            </label>
+
+            <input
+                type="text"
+                id="change_code"
+                name="change_code"
+                required
+                maxlength="100"
+                value="{{
+                    request.form.get(
+                        'change_code',
+                        change.change_code if change else ''
+                    )
+                }}"
+            >
+
+        </div>
+
+        <div class="form-group">
+
+            <label for="account_id">
+                Account
+            </label>
+
+            <select
+                id="account_id"
+                name="account_id"
+                required
+            >
+
+                <option value="">
+                    Select Account
+                </option>
+
+                {% for account in accounts %}
+
+                {% set selected_account_id =
+                    request.form.get(
+                        'account_id',
+                        change.account_id if change else ''
+                    ) | string
+                %}
+
+                <option
+                    value="{{ account.id }}"
+                    {% if selected_account_id == account.id|string %}
+                        selected
+                    {% endif %}
+                >
+                    {{ account.code }} - {{ account.name }}
+                </option>
+
+                {% endfor %}
+
+            </select>
+
+        </div>
+
+        <div class="form-group form-group-full">
+
+            <label for="title">
+                Title
+            </label>
+
+            <input
+                type="text"
+                id="title"
+                name="title"
+                required
+                maxlength="500"
+                value="{{
+                    request.form.get(
+                        'title',
+                        change.title if change else ''
+                    )
+                }}"
+            >
+
+        </div>
+
+        <div class="form-group">
+
+            <label for="change_type">
+                Change Type
+            </label>
+
+            {% set selected_change_type =
+                request.form.get(
+                    'change_type',
+                    change.change_type if change else ''
+                )
+            %}
+
+            <select
+                id="change_type"
+                name="change_type"
+            >
+
+                <option value="">
+                    Select Change Type
+                </option>
+
+                {% for change_type in change_types %}
+
+                <option
+                    value="{{ change_type }}"
+                    {% if selected_change_type == change_type %}
+                        selected
+                    {% endif %}
+                >
+                    {{ change_type }}
+                </option>
+
+                {% endfor %}
+
+            </select>
+
+        </div>
+
+        <div class="form-group">
+
+            <label for="risk_level">
+                Risk Level
+            </label>
+
+            {% set selected_risk_level =
+                request.form.get(
+                    'risk_level',
+                    change.risk_level if change else 'Medium'
+                )
+            %}
+
+            <select
+                id="risk_level"
+                name="risk_level"
+                required
+            >
+
+                {% for risk_level in risk_levels %}
+
+                <option
+                    value="{{ risk_level }}"
+                    {% if selected_risk_level == risk_level %}
+                        selected
+                    {% endif %}
+                >
+                    {{ risk_level }}
+                </option>
+
+                {% endfor %}
+
+            </select>
+
+        </div>
+
+        <div class="form-group">
+
+            <label for="status">
+                Status
+            </label>
+
+            {% set selected_status =
+                request.form.get(
+                    'status',
+                    change.status if change else 'Draft'
+                )
+            %}
+
+            <select
+                id="status"
+                name="status"
+                required
+            >
+
+                {% for change_status in change_statuses %}
+
+                <option
+                    value="{{ change_status }}"
+                    {% if selected_status == change_status %}
+                        selected
+                    {% endif %}
+                >
+                    {{ change_status }}
+                </option>
+
+                {% endfor %}
+
+            </select>
+
+        </div>
+
+        <div class="form-group">
+
+            <label for="owner">
+                Owner
+            </label>
+
+            <input
+                type="text"
+                id="owner"
+                name="owner"
+                maxlength="255"
+                value="{{
+                    request.form.get(
+                        'owner',
+                        change.owner if change else ''
+                    )
+                }}"
+            >
+
+        </div>
+
+        <div class="form-group">
+
+            <label for="scheduled_at">
+                Scheduled At
+            </label>
+
+            <input
+                type="datetime-local"
+                id="scheduled_at"
+                name="scheduled_at"
+                value="{{
+                    request.form.get(
+                        'scheduled_at',
+                        change.scheduled_at.strftime(
+                            '%Y-%m-%dT%H:%M'
+                        )
+                        if change and change.scheduled_at
+                        else ''
+                    )
+                }}"
+            >
+
+        </div>
+
+        <div class="form-group">
+
+            <label for="completed_at">
+                Completed At
+            </label>
+
+            <input
+                type="datetime-local"
+                id="completed_at"
+                name="completed_at"
+                value="{{
+                    request.form.get(
+                        'completed_at',
+                        change.completed_at.strftime(
+                            '%Y-%m-%dT%H:%M'
+                        )
+                        if change and change.completed_at
+                        else ''
+                    )
+                }}"
+            >
+
+        </div>
+
+        <div class="form-group form-group-full">
+
+            <label for="description">
+                Description
+            </label>
+
+            <textarea
+                id="description"
+                name="description"
+                rows="4"
+            >{{ request.form.get(
+                'description',
+                change.description if change else ''
+            ) }}</textarea>
+
+        </div>
+
+        <div class="form-group form-group-full">
+
+            <label for="implementation_plan">
+                Implementation Plan
+            </label>
+
+            <textarea
+                id="implementation_plan"
+                name="implementation_plan"
+                rows="6"
+            >{{ request.form.get(
+                'implementation_plan',
+                change.implementation_plan if change else ''
+            ) }}</textarea>
+
+        </div>
+
+        <div class="form-group form-group-full">
+
+            <label for="rollback_plan">
+                Rollback Plan
+            </label>
+
+            <textarea
+                id="rollback_plan"
+                name="rollback_plan"
+                rows="6"
+            >{{ request.form.get(
+                'rollback_plan',
+                change.rollback_plan if change else ''
+            ) }}</textarea>
+
+        </div>
+
+        <div class="form-group form-group-full">
+
+            <label for="validation_plan">
+                Validation Plan
+            </label>
+
+            <textarea
+                id="validation_plan"
+                name="validation_plan"
+                rows="6"
+            >{{ request.form.get(
+                'validation_plan',
+                change.validation_plan if change else ''
+            ) }}</textarea>
+
+        </div>
+
+    </div>
+
+    <div class="attachment-section">
+
+        <div class="form-group form-group-full">
+
+            <label for="attachment">
+                Attachment
+            </label>
+
+            <input
+                type="file"
+                id="attachment"
+                name="attachment"
+                accept=".pdf,.doc,.docx,.xls,.xlsx,.csv,.txt,.png,.jpg,.jpeg"
+            >
+
+            <small class="form-help">
+                Allowed: PDF, DOC, DOCX, XLS, XLSX, CSV,
+                TXT, PNG, JPG, JPEG.
+                Maximum request size: 20 MB.
+            </small>
+
+        </div>
+
+        {% if change and attachments %}
+
+        <div class="existing-attachments">
+
+            <h3>
+                Existing Attachments
+            </h3>
+
+            {% for attachment in attachments %}
+
+            <div class="attachment-item">
+
+                <div class="attachment-details">
+
+                    <strong>
+                        {{ attachment.original_filename }}
+                    </strong>
+
+                    <small>
+                        {% if attachment.file_size %}
+                            {{
+                                "%.1f"|format(
+                                    attachment.file_size / 1024
+                                )
+                            }} KB
+                        {% else %}
+                            Unknown size
+                        {% endif %}
+                    </small>
+
+                </div>
+
+                <a
+                    href="{{
+                        url_for(
+                            'change_requests.download_attachment',
+                            change_id=change.id,
+                            attachment_id=attachment.id
+                        )
+                    }}"
+                    class="button button-secondary"
+                >
+                    Download
+                </a>
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+        {% endif %}
+
+    </div>
+
+    <div class="form-actions">
+
+        <button
+            type="submit"
+            class="button button-primary"
+        >
+            Save Change Request
+        </button>
+
+        <a
+            href="{{ url_for('change_requests.index') }}"
+            class="button button-secondary"
+        >
+            Cancel
+        </a>
+
+    </div>
+
+</form>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1"
+    >
+
+    <title>
+        {% block title %}VoIP Operations Portal{% endblock %}
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/app.css') }}"
+    >
+</head>
+
+<body>
+
+<div class="app-shell">
+
+    <aside class="sidebar">
+
+        <div class="sidebar-brand">
+            <div class="brand-title">
+                VoIP Operations
+            </div>
+
+            <div class="brand-subtitle">
+                Voice Team Platform
+            </div>
+        </div>
+
+        <nav class="sidebar-nav">
+
+            <a
+                href="{{ url_for('main.dashboard') }}"
+                class="nav-link
+                {% if request.endpoint == 'main.dashboard' %}
+                    active
+                {% endif %}"
+            >
+                <span class="nav-icon">▦</span>
+                <span>Dashboard</span>
+            </a>
+
+            <a
+                href="{{ url_for('accounts.index') }}"
+                class="nav-link
+                {% if request.blueprint == 'accounts' %}
+                    active
+                {% endif %}"
+            >
+                <span class="nav-icon">◉</span>
+                <span>Accounts</span>
+            </a>
+
+            <div class="nav-section-title">
+                Operations
+            </div>
+
+            <a
+                href="{{ url_for('operation_plans.index') }}"
+                class="nav-link
+                {% if request.blueprint == 'operation_plans' %}
+                    active
+                {% endif %}"
+            >
+                <span class="nav-icon">▤</span>
+                <span>Operation Plans</span>
+            </a>
+
+            <a
+                href="{{ url_for('check_items.index') }}"
+                class="nav-link
+                {% if request.blueprint == 'check_items' %}
+                    active
+                {% endif %}"
+            >
+                <span class="nav-icon">✓</span>
+                <span>Check Items</span>
+            </a>
+
+            <a
+                href="{{ url_for('change_requests.index') }}"
+                class="nav-link
+                {% if request.blueprint == 'change_requests' %}
+                    active
+                {% endif %}"
+            >
+                <span class="nav-icon">⇄</span>
+                <span>Change Requests</span>
+            </a>
+
+            <a
+                href="{{ url_for('incidents.index') }}"
+                class="nav-link
+                {% if request.blueprint == 'incidents' %}
+                    active
+                {% endif %}"
+            >
+                <span class="nav-icon">!</span>
+                <span>Incidents & IR</span>
+            </a>
+
+            <div class="nav-section-title">
+                Resources
+            </div>
+
+            <a
+                href="http://{{ request.host.split(':')[0] }}:6875"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="nav-link"
+            >
+                <span class="nav-icon">▣</span>
+                <span>Knowledge Base</span>
+            </a>
+
+            <div class="nav-section-title">
+                Administration
+            </div>
+
+            <div class="nav-link nav-disabled">
+                <span class="nav-icon">♙</span>
+                <span>Users</span>
+            </div>
+
+            <div class="nav-link nav-disabled">
+                <span class="nav-icon">≡</span>
+                <span>Audit Logs</span>
+            </div>
+
+        </nav>
+
+    </aside>
+
+    <div class="main-shell">
+
+        <header class="topbar">
+
+            <div class="topbar-page">
+
+                {% block page_header %}
+                <span>VoIP Operations Portal</span>
+                {% endblock %}
+
+            </div>
+
+            <div class="user-area">
+
+                <div class="user-details">
+
+                    <strong>
+                        {{ current_user.display_name }}
+                    </strong>
+
+                    <span>
+                        {{ current_user.role }}
+                    </span>
+
+                </div>
+
+                <form
+                    method="post"
+                    action="{{ url_for('auth.logout') }}"
+                >
+                    <button
+                        type="submit"
+                        class="logout-button"
+                    >
+                        Logout
+                    </button>
+                </form>
+
+            </div>
+
+        </header>
+
+        <main class="main-content">
+
+            {% with messages =
+                get_flashed_messages(with_categories=true)
+            %}
+
+                {% if messages %}
+
+                    {% for category, message in messages %}
+
+                        <div class="alert alert-{{ category }}">
+                            {{ message }}
+                        </div>
+
+                    {% endfor %}
+
+                {% endif %}
+
+            {% endwith %}
+
+            {% block content %}{% endblock %}
+
+        </main>
+
+    </div>
+
+</div>
+
+</body>
+</html>

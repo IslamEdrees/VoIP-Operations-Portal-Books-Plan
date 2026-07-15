@@ -1,0 +1,152 @@
+{% extends "base.html" %}
+
+{% block title %}
+Incidents & IR | VoIP Operations Portal
+{% endblock %}
+
+{% block page_header %}
+Incidents & IR
+{% endblock %}
+
+{% block content %}
+
+<div class="page-heading">
+
+    <div>
+        <h1>Incidents & IR</h1>
+
+        <p>
+            Manage operational incidents,
+            investigations, root causes and resolutions.
+        </p>
+    </div>
+
+    <a
+        href="{{ url_for('incidents.create') }}"
+        class="button button-primary"
+    >
+        Add Incident
+    </a>
+
+</div>
+
+<div class="table-card">
+
+    {% if incidents %}
+
+        <div class="table-responsive">
+
+            <table>
+
+                <thead>
+                    <tr>
+                        <th>Incident Code</th>
+                        <th>Account</th>
+                        <th>Title</th>
+                        <th>Severity</th>
+                        <th>Owner</th>
+                        <th>Status</th>
+                        <th>Started</th>
+                        <th>Resolved</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for incident in incidents %}
+
+                        <tr>
+
+                            <td>
+                                <strong>
+                                    {{ incident.incident_code }}
+                                </strong>
+                            </td>
+
+                            <td>
+                                {{ incident.account.code }}
+                            </td>
+
+                            <td>
+                                {{ incident.title }}
+                            </td>
+
+                            <td>
+                                {{ incident.severity }}
+                            </td>
+
+                            <td>
+                                {{ incident.owner or "-" }}
+                            </td>
+
+                            <td>
+                                {{ incident.status }}
+                            </td>
+
+                            <td>
+                                {% if incident.started_at %}
+                                    {{
+                                        incident.started_at.strftime(
+                                            "%Y-%m-%d %H:%M"
+                                        )
+                                    }}
+                                {% else %}
+                                    -
+                                {% endif %}
+                            </td>
+
+                            <td>
+                                {% if incident.resolved_at %}
+                                    {{
+                                        incident.resolved_at.strftime(
+                                            "%Y-%m-%d %H:%M"
+                                        )
+                                    }}
+                                {% else %}
+                                    -
+                                {% endif %}
+                            </td>
+
+                            <td>
+                                <a
+                                    href="{{
+                                        url_for(
+                                            'incidents.edit',
+                                            incident_id=incident.id
+                                        )
+                                    }}"
+                                    class="button button-secondary"
+                                >
+                                    Edit
+                                </a>
+                            </td>
+
+                        </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    {% else %}
+
+        <div class="empty-state">
+
+            <h2>No Incidents Found</h2>
+
+            <p>
+                Create the first Incident or
+                Incident Report record.
+            </p>
+
+        </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}

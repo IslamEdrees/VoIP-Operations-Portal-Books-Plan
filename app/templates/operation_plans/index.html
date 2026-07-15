@@ -1,0 +1,143 @@
+{% extends "base.html" %}
+
+{% block title %}
+Operation Plans | VoIP Operations Portal
+{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+
+    <div>
+        <h1>Operation Plans</h1>
+
+        <p>
+            Manage migration, maintenance, upgrade,
+            deployment and operational check plans.
+        </p>
+    </div>
+
+    <a
+        class="button button-primary"
+        href="{{ url_for('operation_plans.create') }}"
+    >
+        Add Operation Plan
+    </a>
+
+</div>
+
+<div class="content-card">
+
+    {% if plans %}
+
+        <div class="table-wrapper">
+
+            <table class="data-table">
+
+                <thead>
+                    <tr>
+                        <th>Plan Code</th>
+                        <th>Account</th>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Owner</th>
+                        <th>Status</th>
+                        <th>Plan Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for plan in plans %}
+
+                        <tr>
+
+                            <td>
+                                <strong>
+                                    {{ plan.plan_code }}
+                                </strong>
+                            </td>
+
+                            <td>
+                                {{ plan.account.code }}
+                            </td>
+
+                            <td>
+                                {{ plan.name }}
+                            </td>
+
+                            <td>
+                                {{ plan.plan_type }}
+                            </td>
+
+                            <td>
+                                {{ plan.owner or "-" }}
+                            </td>
+
+                            <td>
+                                <span
+                                    class="
+                                        status-badge
+                                        status-{{ plan.status|lower|replace(' ', '-') }}
+                                    "
+                                >
+                                    {{ plan.status }}
+                                </span>
+                            </td>
+
+                            <td>
+                                {% if plan.plan_date %}
+                                    {{ plan.plan_date.strftime('%Y-%m-%d') }}
+                                {% else %}
+                                    -
+                                {% endif %}
+                            </td>
+
+                            <td>
+                                <a
+                                    class="button button-secondary button-small"
+                                    href="{{ url_for(
+                                        'operation_plans.edit',
+                                        plan_id=plan.id
+                                    ) }}"
+                                >
+                                    Edit
+                                </a>
+                            </td>
+
+                        </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    {% else %}
+
+        <div class="empty-state">
+
+            <h2>No Operation Plans Yet</h2>
+
+            <p>
+                Create the first operational plan for
+                an account.
+            </p>
+
+            <a
+                class="button button-primary"
+                href="{{ url_for('operation_plans.create') }}"
+            >
+                Create Operation Plan
+            </a>
+
+        </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}

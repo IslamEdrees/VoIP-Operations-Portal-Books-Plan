@@ -1,0 +1,139 @@
+{% extends "base.html" %}
+
+{% block title %}
+Check Items | VoIP Operations Portal
+{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+
+    <div>
+        <h1>Check Items</h1>
+
+        <p>
+            Manage operational validation and execution
+            items assigned to Operation Plans.
+        </p>
+    </div>
+
+    <a
+        class="button button-primary"
+        href="{{ url_for('check_items.create') }}"
+    >
+        Add Check Item
+    </a>
+
+</div>
+
+<div class="content-card">
+
+    {% if items %}
+
+        <div class="table-wrapper">
+
+            <table class="data-table">
+
+                <thead>
+                    <tr>
+                        <th>Plan</th>
+                        <th>Check ID</th>
+                        <th>Type</th>
+                        <th>Check Item</th>
+                        <th>Owner</th>
+                        <th>Status</th>
+                        <th>Order</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for item in items %}
+
+                        <tr>
+
+                            <td>
+                                <strong>
+                                    {{ item.plan.plan_code }}
+                                </strong>
+                            </td>
+
+                            <td>
+                                {{ item.check_id or "-" }}
+                            </td>
+
+                            <td>
+                                {{ item.check_type or "-" }}
+                            </td>
+
+                            <td>
+                                {{ item.check_item }}
+                            </td>
+
+                            <td>
+                                {{ item.owner or "-" }}
+                            </td>
+
+                            <td>
+                                <span
+                                    class="
+                                        status-badge
+                                        status-{{ item.status|lower|replace(' ', '-') }}
+                                    "
+                                >
+                                    {{ item.status }}
+                                </span>
+                            </td>
+
+                            <td>
+                                {{ item.sort_order }}
+                            </td>
+
+                            <td>
+                                <a
+                                    class="button button-secondary button-small"
+                                    href="{{ url_for(
+                                        'check_items.edit',
+                                        item_id=item.id
+                                    ) }}"
+                                >
+                                    Edit
+                                </a>
+                            </td>
+
+                        </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    {% else %}
+
+        <div class="empty-state">
+
+            <h2>No Check Items Yet</h2>
+
+            <p>
+                Create the first validation item for
+                an Operation Plan.
+            </p>
+
+            <a
+                class="button button-primary"
+                href="{{ url_for('check_items.create') }}"
+            >
+                Create Check Item
+            </a>
+
+        </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}

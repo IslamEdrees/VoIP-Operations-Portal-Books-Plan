@@ -1,0 +1,190 @@
+{% extends "base.html" %}
+
+{% block title %}
+Dashboard | VoIP Operations Portal
+{% endblock %}
+
+{% block page_header %}
+Dashboard
+{% endblock %}
+
+{% block content %}
+
+<div class="page-heading">
+
+    <div>
+        <h1>Operations Dashboard</h1>
+
+        <p>
+            Central management portal for Voice Team operations.
+        </p>
+    </div>
+
+</div>
+
+<div class="dashboard-grid">
+
+    <a
+        href="{{ url_for('accounts.index') }}"
+        class="dashboard-card dashboard-card-link"
+    >
+        <span>Accounts</span>
+
+        <strong>
+            {{ counts.accounts }}
+        </strong>
+
+        <small>
+            Manage operational accounts
+        </small>
+    </a>
+
+    <a
+        href="{{ url_for('incidents.index') }}"
+        class="dashboard-card dashboard-card-link"
+    >
+
+        <span>Incidents</span>
+
+        <strong>
+            {{ counts.incidents }}
+        </strong>
+
+        <small>
+            Incident and IR records
+        </small>
+
+    </a>
+
+    <a
+        href="{{ url_for('change_requests.index') }}"
+        class="dashboard-card dashboard-card-link"
+    >
+
+        <span>Change Requests</span>
+
+        <strong>
+            {{ counts.change_requests }}
+        </strong>
+
+        <small>
+            Operational changes
+        </small>
+
+    </a>
+
+    <div class="dashboard-card">
+
+        <span>Operation Plans</span>
+
+        <strong>
+            {{ counts.operation_plans }}
+        </strong>
+
+        <small>
+            Migration and activity plans
+        </small>
+
+    </div>
+
+    <div class="dashboard-card">
+
+        <span>Check Items</span>
+
+        <strong>
+            {{ counts.plan_items }}
+        </strong>
+
+        <small>
+            Operational checklist items
+        </small>
+
+    </div>
+
+</div>
+
+<div class="dashboard-section">
+
+    <div class="section-header">
+
+        <div>
+            <h2>Platform Modules</h2>
+
+            <p>
+                Operational tools and technical knowledge resources.
+            </p>
+        </div>
+
+    </div>
+
+    <div class="module-grid">
+
+        <a
+            href="{{ url_for('accounts.index') }}"
+            class="module-card"
+        >
+            <strong>Accounts</strong>
+
+            <span>
+                Manage customer and operational accounts.
+            </span>
+        </a>
+
+        <div class="module-card module-card-disabled">
+
+            <strong>Operation Plans</strong>
+
+            <span>
+                Pre-migration, post-migration and activity plans.
+            </span>
+
+            <small>Coming Next</small>
+
+        </div>
+
+        <a
+            href="{{ url_for('change_requests.index') }}"
+            class="module-card"
+        >
+
+            <strong>Change Requests</strong>
+
+            <span>
+                Track operational and infrastructure changes.
+            </span>
+
+        </a>
+
+        <a
+            href="{{ url_for('incidents.index') }}"
+            class="module-card"
+        >
+
+            <strong>Incidents & IR</strong>
+
+            <span>
+                Manage incidents, investigations and root causes.
+            </span>
+
+            <small>Available</small>
+
+        </a>
+
+        <a
+            href="http://{{ request.host.split(':')[0] }}:6875"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="module-card"
+        >
+            <strong>Knowledge Base</strong>
+
+            <span>
+                Open technical documentation and team knowledge.
+            </span>
+        </a>
+
+    </div>
+
+</div>
+
+{% endblock %}

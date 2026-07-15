@@ -1,0 +1,279 @@
+{% extends "base.html" %}
+
+{% block title %}
+{{ page_title }} | VoIP Operations Portal
+{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+
+    <div>
+        <h1>{{ page_title }}</h1>
+
+        <p>
+            Define the account, plan type, ownership,
+            schedule and operational status.
+        </p>
+    </div>
+
+    <a
+        class="button button-secondary"
+        href="{{ url_for('operation_plans.index') }}"
+    >
+        Back to Operation Plans
+    </a>
+
+</div>
+
+<div class="content-card">
+
+    <form method="post" class="application-form">
+
+        <div class="form-grid">
+
+            <div class="form-group">
+
+                <label for="plan_code">
+                    Plan Code
+                </label>
+
+                <input
+                    id="plan_code"
+                    name="plan_code"
+                    type="text"
+                    maxlength="100"
+                    required
+                    value="{{
+                        request.form.get(
+                            'plan_code',
+                            plan.plan_code if plan else ''
+                        )
+                    }}"
+                    placeholder="Example: EBU-MIG-2026-001"
+                >
+
+            </div>
+
+            <div class="form-group">
+
+                <label for="account_id">
+                    Account
+                </label>
+
+                <select
+                    id="account_id"
+                    name="account_id"
+                    required
+                >
+
+                    <option value="">
+                        Select Account
+                    </option>
+
+                    {% for account in accounts %}
+
+                        {% set selected_account = request.form.get(
+                            'account_id',
+                            plan.account_id|string if plan else ''
+                        ) %}
+
+                        <option
+                            value="{{ account.id }}"
+                            {% if selected_account|string == account.id|string %}
+                                selected
+                            {% endif %}
+                        >
+                            {{ account.code }} — {{ account.name }}
+                        </option>
+
+                    {% endfor %}
+
+                </select>
+
+            </div>
+
+            <div class="form-group form-group-wide">
+
+                <label for="name">
+                    Plan Name
+                </label>
+
+                <input
+                    id="name"
+                    name="name"
+                    type="text"
+                    maxlength="500"
+                    required
+                    value="{{
+                        request.form.get(
+                            'name',
+                            plan.name if plan else ''
+                        )
+                    }}"
+                    placeholder="Example: EBU Post-Migration Validation"
+                >
+
+            </div>
+
+            <div class="form-group">
+
+                <label for="plan_type">
+                    Plan Type
+                </label>
+
+                {% set selected_type = request.form.get(
+                    'plan_type',
+                    plan.plan_type if plan else ''
+                ) %}
+
+                <select
+                    id="plan_type"
+                    name="plan_type"
+                    required
+                >
+
+                    <option value="">
+                        Select Plan Type
+                    </option>
+
+                    {% for plan_type in plan_types %}
+
+                        <option
+                            value="{{ plan_type }}"
+                            {% if selected_type == plan_type %}
+                                selected
+                            {% endif %}
+                        >
+                            {{ plan_type }}
+                        </option>
+
+                    {% endfor %}
+
+                </select>
+
+            </div>
+
+            <div class="form-group">
+
+                <label for="status">
+                    Status
+                </label>
+
+                {% set selected_status = request.form.get(
+                    'status',
+                    plan.status if plan else 'Planned'
+                ) %}
+
+                <select
+                    id="status"
+                    name="status"
+                    required
+                >
+
+                    {% for plan_status in plan_statuses %}
+
+                        <option
+                            value="{{ plan_status }}"
+                            {% if selected_status == plan_status %}
+                                selected
+                            {% endif %}
+                        >
+                            {{ plan_status }}
+                        </option>
+
+                    {% endfor %}
+
+                </select>
+
+            </div>
+
+            <div class="form-group">
+
+                <label for="owner">
+                    Owner
+                </label>
+
+                <input
+                    id="owner"
+                    name="owner"
+                    type="text"
+                    maxlength="255"
+                    value="{{
+                        request.form.get(
+                            'owner',
+                            plan.owner if plan and plan.owner else ''
+                        )
+                    }}"
+                    placeholder="Example: Voice Team"
+                >
+
+            </div>
+
+            <div class="form-group">
+
+                <label for="plan_date">
+                    Plan Date
+                </label>
+
+                <input
+                    id="plan_date"
+                    name="plan_date"
+                    type="date"
+                    value="{{
+                        request.form.get(
+                            'plan_date',
+                            plan.plan_date.strftime('%Y-%m-%d')
+                            if plan and plan.plan_date
+                            else ''
+                        )
+                    }}"
+                >
+
+            </div>
+
+            <div class="form-group form-group-wide">
+
+                <label for="description">
+                    Description
+                </label>
+
+                <textarea
+                    id="description"
+                    name="description"
+                    rows="6"
+                    placeholder="Describe the operational plan..."
+                >{{ request.form.get(
+                    'description',
+                    plan.description
+                    if plan and plan.description
+                    else ''
+                ) }}</textarea>
+
+            </div>
+
+        </div>
+
+        <div class="form-actions">
+
+            <a
+                class="button button-secondary"
+                href="{{ url_for('operation_plans.index') }}"
+            >
+                Cancel
+            </a>
+
+            <button
+                class="button button-primary"
+                type="submit"
+            >
+                Save Operation Plan
+            </button>
+
+        </div>
+
+    </form>
+
+</div>
+
+{% endblock %}

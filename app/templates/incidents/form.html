@@ -1,0 +1,450 @@
+{% extends "base.html" %}
+
+{% if incident %}
+    {% set page_title = "Edit Incident" %}
+{% else %}
+    {% set page_title = "Add Incident" %}
+{% endif %}
+
+{% block title %}
+{{ page_title }} | VoIP Operations Portal
+{% endblock %}
+
+{% block page_header %}
+Incidents & IR
+{% endblock %}
+
+{% block content %}
+
+<div class="page-heading">
+
+    <div>
+        <h1>{{ page_title }}</h1>
+
+        <p>
+            Record operational incident,
+            investigation, root cause and resolution data.
+        </p>
+    </div>
+
+</div>
+
+<div class="form-card">
+
+    <form
+        method="post"
+        enctype="multipart/form-data"
+    >
+
+        <div class="form-grid">
+
+            <div class="form-group">
+
+                <label for="incident_code">
+                    Incident Code
+                </label>
+
+                <input
+                    id="incident_code"
+                    name="incident_code"
+                    type="text"
+                    maxlength="100"
+                    required
+                    value="{{
+                        request.form.get(
+                            'incident_code',
+                            incident.incident_code
+                            if incident else ''
+                        )
+                    }}"
+                >
+
+            </div>
+
+            <div class="form-group">
+
+                <label for="account_id">
+                    Account
+                </label>
+
+                {% set selected_account =
+                    request.form.get(
+                        'account_id',
+                        incident.account_id
+                        if incident else ''
+                    ) | string
+                %}
+
+                <select
+                    id="account_id"
+                    name="account_id"
+                    required
+                >
+
+                    <option value="">
+                        Select Account
+                    </option>
+
+                    {% for account in accounts %}
+
+                        <option
+                            value="{{ account.id }}"
+                            {% if
+                                selected_account
+                                ==
+                                account.id | string
+                            %}
+                                selected
+                            {% endif %}
+                        >
+                            {{ account.code }}
+                            -
+                            {{ account.name }}
+                        </option>
+
+                    {% endfor %}
+
+                </select>
+
+            </div>
+
+            <div class="form-group form-group-full">
+
+                <label for="title">
+                    Title
+                </label>
+
+                <input
+                    id="title"
+                    name="title"
+                    type="text"
+                    maxlength="500"
+                    required
+                    value="{{
+                        request.form.get(
+                            'title',
+                            incident.title
+                            if incident else ''
+                        )
+                    }}"
+                >
+
+            </div>
+
+            <div class="form-group">
+
+                <label for="severity">
+                    Severity
+                </label>
+
+                {% set selected_severity =
+                    request.form.get(
+                        'severity',
+                        incident.severity
+                        if incident else 'Medium'
+                    )
+                %}
+
+                <select
+                    id="severity"
+                    name="severity"
+                    required
+                >
+
+                    {% for severity in severities %}
+
+                        <option
+                            value="{{ severity }}"
+                            {% if
+                                selected_severity
+                                ==
+                                severity
+                            %}
+                                selected
+                            {% endif %}
+                        >
+                            {{ severity }}
+                        </option>
+
+                    {% endfor %}
+
+                </select>
+
+            </div>
+
+            <div class="form-group">
+
+                <label for="status">
+                    Status
+                </label>
+
+                {% set selected_status =
+                    request.form.get(
+                        'status',
+                        incident.status
+                        if incident else 'Open'
+                    )
+                %}
+
+                <select
+                    id="status"
+                    name="status"
+                    required
+                >
+
+                    {% for status in statuses %}
+
+                        <option
+                            value="{{ status }}"
+                            {% if
+                                selected_status
+                                ==
+                                status
+                            %}
+                                selected
+                            {% endif %}
+                        >
+                            {{ status }}
+                        </option>
+
+                    {% endfor %}
+
+                </select>
+
+            </div>
+
+            <div class="form-group">
+
+                <label for="owner">
+                    Owner
+                </label>
+
+                <input
+                    id="owner"
+                    name="owner"
+                    type="text"
+                    maxlength="255"
+                    value="{{
+                        request.form.get(
+                            'owner',
+                            incident.owner
+                            if incident and incident.owner
+                            else ''
+                        )
+                    }}"
+                >
+
+            </div>
+
+            <div class="form-group">
+
+                <label for="started_at">
+                    Started At
+                </label>
+
+                <input
+                    id="started_at"
+                    name="started_at"
+                    type="datetime-local"
+                    value="{{
+                        request.form.get(
+                            'started_at',
+                            incident.started_at.strftime(
+                                '%Y-%m-%dT%H:%M'
+                            )
+                            if incident
+                            and incident.started_at
+                            else ''
+                        )
+                    }}"
+                >
+
+            </div>
+
+            <div class="form-group">
+
+                <label for="resolved_at">
+                    Resolved At
+                </label>
+
+                <input
+                    id="resolved_at"
+                    name="resolved_at"
+                    type="datetime-local"
+                    value="{{
+                        request.form.get(
+                            'resolved_at',
+                            incident.resolved_at.strftime(
+                                '%Y-%m-%dT%H:%M'
+                            )
+                            if incident
+                            and incident.resolved_at
+                            else ''
+                        )
+                    }}"
+                >
+
+            </div>
+
+            <div class="form-group form-group-full">
+
+                <label for="description">
+                    Description
+                </label>
+
+                <textarea
+                    id="description"
+                    name="description"
+                    rows="5"
+                >{{ request.form.get(
+                    'description',
+                    incident.description
+                    if incident and incident.description
+                    else ''
+                ) }}</textarea>
+
+            </div>
+
+            <div class="form-group form-group-full">
+
+                <label for="root_cause">
+                    Root Cause
+                </label>
+
+                <textarea
+                    id="root_cause"
+                    name="root_cause"
+                    rows="5"
+                >{{ request.form.get(
+                    'root_cause',
+                    incident.root_cause
+                    if incident and incident.root_cause
+                    else ''
+                ) }}</textarea>
+
+            </div>
+
+            <div class="form-group form-group-full">
+
+                <label for="resolution">
+                    Resolution
+                </label>
+
+                <textarea
+                    id="resolution"
+                    name="resolution"
+                    rows="5"
+                >{{ request.form.get(
+                    'resolution',
+                    incident.resolution
+                    if incident and incident.resolution
+                    else ''
+                ) }}</textarea>
+
+            </div>
+
+        </div>
+
+        <div class="form-group form-group-full">
+
+            <label for="attachment">
+                Attachment
+            </label>
+
+            <input
+                id="attachment"
+                name="attachment"
+                type="file"
+                accept=".pdf,.doc,.docx,.xls,.xlsx,.csv,.txt,.png,.jpg,.jpeg"
+            >
+
+            <small>
+                Allowed: PDF, DOC, DOCX, XLS, XLSX,
+                CSV, TXT, PNG, JPG, JPEG.
+                Maximum request size: 20 MB.
+            </small>
+
+        </div>
+
+        {% if incident and attachments %}
+
+            <div class="form-group form-group-full">
+
+                <label>
+                    Existing Attachments
+                </label>
+
+                <div class="attachment-list">
+
+                    {% for attachment in attachments %}
+
+                        <div class="attachment-item">
+
+                            <div>
+
+                                <strong>
+                                    {{ attachment.original_filename }}
+                                </strong>
+
+                                <small>
+                                    {{
+                                        (
+                                            attachment.file_size
+                                            / 1024
+                                        ) | round(1)
+                                    }}
+                                    KB
+                                </small>
+
+                            </div>
+
+                            <a
+                                href="{{
+                                    url_for(
+                                        'incidents.download_attachment',
+                                        incident_id=incident.id,
+                                        attachment_id=attachment.id
+                                    )
+                                }}"
+                                class="button button-secondary"
+                            >
+                                Download
+                            </a>
+
+                        </div>
+
+                    {% endfor %}
+
+                </div>
+
+            </div>
+
+        {% endif %}
+
+        <div class="form-actions">
+
+            <a
+                href="{{ url_for('incidents.index') }}"
+                class="button button-secondary"
+            >
+                Cancel
+            </a>
+
+            <button
+                type="submit"
+                class="button button-primary"
+            >
+                {% if incident %}
+                    Save Changes
+                {% else %}
+                    Create Incident
+                {% endif %}
+            </button>
+
+        </div>
+
+    </form>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,171 @@
+{% extends "base.html" %}
+
+{% block title %}
+Accounts | VoIP Operations Portal
+{% endblock %}
+
+{% block page_header %}
+Accounts
+{% endblock %}
+
+{% block content %}
+
+<div class="page-heading page-heading-actions">
+
+    <div>
+        <h1>Accounts</h1>
+
+        <p>
+            Manage customer and operational accounts.
+        </p>
+    </div>
+
+    <a
+        href="{{ url_for('accounts.create') }}"
+        class="button button-primary"
+    >
+        Add Account
+    </a>
+
+</div>
+
+<div class="content-card">
+
+    {% if accounts %}
+
+        <div class="table-responsive">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+                        <th>Code</th>
+                        <th>Name</th>
+                        <th>Description</th>
+                        <th>Status</th>
+                        <th>Created</th>
+                        <th>Actions</th>
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    {% for account in accounts %}
+
+                        <tr>
+
+                            <td>
+                                <strong>
+                                    {{ account.code }}
+                                </strong>
+                            </td>
+
+                            <td>
+                                {{ account.name }}
+                            </td>
+
+                            <td>
+                                {{ account.description or '-' }}
+                            </td>
+
+                            <td>
+
+                                {% if account.is_active %}
+
+                                    <span class="status status-active">
+                                        Active
+                                    </span>
+
+                                {% else %}
+
+                                    <span class="status status-inactive">
+                                        Inactive
+                                    </span>
+
+                                {% endif %}
+
+                            </td>
+
+                            <td>
+                                {{ account.created_at.strftime(
+                                    '%Y-%m-%d %H:%M'
+                                ) }}
+                            </td>
+
+                            <td>
+
+                                <div class="action-group">
+
+                                    <a
+                                        href="{{ url_for(
+                                            'accounts.edit',
+                                            account_id=account.id
+                                        ) }}"
+                                        class="button button-secondary"
+                                    >
+                                        Edit
+                                    </a>
+
+                                    <form
+                                        method="post"
+                                        action="{{ url_for(
+                                            'accounts.toggle',
+                                            account_id=account.id
+                                        ) }}"
+                                    >
+
+                                        <button
+                                            type="submit"
+                                            class="button button-warning"
+                                        >
+
+                                            {% if account.is_active %}
+                                                Disable
+                                            {% else %}
+                                                Enable
+                                            {% endif %}
+
+                                        </button>
+
+                                    </form>
+
+                                </div>
+
+                            </td>
+
+                        </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    {% else %}
+
+        <div class="empty-state">
+
+            <h3>No Accounts Found</h3>
+
+            <p>
+                Create the first operational account to continue.
+            </p>
+
+            <a
+                href="{{ url_for('accounts.create') }}"
+                class="button button-primary"
+            >
+                Create Account
+            </a>
+
+        </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}

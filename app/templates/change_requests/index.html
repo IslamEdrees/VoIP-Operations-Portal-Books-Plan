@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+
+{% block title %}
+Change Requests | VoIP Operations Portal
+{% endblock %}
+
+{% block page_header %}
+Change Requests
+{% endblock %}
+
+{% block content %}
+
+<div class="page-heading">
+
+    <div>
+        <h1>Change Requests</h1>
+
+        <p>
+            Manage operational, infrastructure and application changes.
+        </p>
+    </div>
+
+</div>
+
+<a
+    href="{{ url_for('change_requests.create') }}"
+    class="button button-primary"
+>
+    Add Change Request
+</a>
+
+<div class="table-card">
+
+    <table>
+
+        <thead>
+            <tr>
+                <th>CHANGE CODE</th>
+                <th>ACCOUNT</th>
+                <th>TITLE</th>
+                <th>TYPE</th>
+                <th>RISK</th>
+                <th>OWNER</th>
+                <th>STATUS</th>
+                <th>SCHEDULED</th>
+                <th>ACTIONS</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            {% for change in changes %}
+
+            <tr>
+                <td>
+                    <strong>{{ change.change_code }}</strong>
+                </td>
+
+                <td>
+                    {{ change.account.code }}
+                </td>
+
+                <td>
+                    {{ change.title }}
+                </td>
+
+                <td>
+                    {{ change.change_type or '-' }}
+                </td>
+
+                <td>
+                    {{ change.risk_level or '-' }}
+                </td>
+
+                <td>
+                    {{ change.owner or '-' }}
+                </td>
+
+                <td>
+                    {{ change.status }}
+                </td>
+
+                <td>
+                    {% if change.scheduled_at %}
+                        {{ change.scheduled_at.strftime('%Y-%m-%d %H:%M') }}
+                    {% else %}
+                        -
+                    {% endif %}
+                </td>
+
+                <td>
+                    <a
+                        href="{{ url_for(
+                            'change_requests.edit',
+                            change_id=change.id
+                        ) }}"
+                        class="button button-secondary"
+                    >
+                        Edit
+                    </a>
+                </td>
+            </tr>
+
+            {% else %}
+
+            <tr>
+                <td colspan="9">
+                    No Change Requests found.
+                </td>
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
+</div>
+
+{% endblock %}
