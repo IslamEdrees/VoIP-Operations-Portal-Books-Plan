@@ -170,9 +170,15 @@ sudo ./uninstall.sh
 
 ---
 
-# License
 
-MIT License
+<img width="1889" height="642" alt="image" src="https://github.com/user-attachments/assets/2c6d817f-1262-4860-bebb-a876a8ef2504" />
+
+
+<img width="1907" height="903" alt="image" src="https://github.com/user-attachments/assets/bd11115c-7540-441d-9eb8-61c9c0b7ef4d" />
+
+<img width="1900" height="893" alt="image" src="https://github.com/user-attachments/assets/a879c67c-b8a6-4c72-a9ba-4ff642dcb419" />
+
+<img width="1886" height="903" alt="image" src="https://github.com/user-attachments/assets/4f69a7a3-1f91-4285-b156-f336217eafc3" />
 
 ---
 
