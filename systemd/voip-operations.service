@@ -1,0 +1,28 @@
+[Unit]
+Description=VoIP Operations Portal
+After=network.target postgresql.service docker.service
+Wants=postgresql.service docker.service
+
+[Service]
+Type=simple
+
+User=root
+Group=root
+
+WorkingDirectory=/opt/voip-operations
+
+EnvironmentFile=/opt/voip-operations/.env
+
+ExecStart=/opt/voip-operations/venv/bin/gunicorn \
+    --bind 0.0.0.0:6880 \
+    --workers 2 \
+    --timeout 30 \
+    --access-logfile - \
+    --error-logfile - \
+    wsgi:app
+
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
